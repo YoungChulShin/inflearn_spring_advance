@@ -1,1 +1,2 @@
-# inflearn_spring_advance
+# 저장소 설명
+인프런 스프링 핵심원리 고급편 강의 실습 저장소 
