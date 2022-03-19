@@ -3,12 +3,10 @@ package hello.proxy.pureproxy.decorator.code;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MessageDecorator implements Component {
-
-  private final Component realComponent;
+public class MessageDecorator extends Decorator {
 
   public MessageDecorator(Component realComponent) {
-    this.realComponent = realComponent;
+    super(realComponent);
   }
 
   @Override
