@@ -4,6 +4,8 @@ import hello.proxy.jdkdynamic.code.AImpl;
 import hello.proxy.jdkdynamic.code.AInterface;
 import hello.proxy.jdkdynamic.code.BImpl;
 import hello.proxy.jdkdynamic.code.BInterface;
+import hello.proxy.jdkdynamic.code.CImpl;
+import hello.proxy.jdkdynamic.code.CInterface;
 import hello.proxy.jdkdynamic.code.TimeInvocationHandler;
 import java.lang.reflect.Proxy;
 import lombok.extern.slf4j.Slf4j;
@@ -40,5 +42,19 @@ public class JdkDynamicProxyTest {
     proxy.call();
     log.info("proxy class = {}", proxy.getClass());
     log.info("target class = {}", target.getClass());
+  }
+
+  @Test
+  void dynamicC() {
+    CInterface cInterface = new CImpl();
+    TimeInvocationHandler handler = new TimeInvocationHandler(cInterface);
+
+    CInterface proxy = (CInterface) Proxy.newProxyInstance(
+        CInterface.class.getClassLoader(),
+        new Class[]{CInterface.class},
+        handler);
+
+    int result = proxy.calculate(1, 2);
+    System.out.println(result);
   }
 }
