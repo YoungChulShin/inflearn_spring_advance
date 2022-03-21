@@ -1,6 +1,7 @@
 package hello.proxy.jdkdynamic;
 
-import java.util.function.Consumer;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,43 @@ public class ReflectionTest {
 
     // 공통 로직 2 시작
     call(target::callB);
+  }
+
+  @Test
+  void reflection1()
+      throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    Class<?> helloClass = Class.forName("hello.proxy.jdkdynamic.ReflectionTest$Hello");
+
+    Hello hello = new Hello();
+
+    Method callAMethod = helloClass.getMethod("callA");
+    Object result1 = callAMethod.invoke(hello);
+    log.info("result={}", result1);
+
+    Method callBMethod = helloClass.getMethod("callB");
+    Object result2 = callBMethod.invoke(hello);
+    log.info("result={}", result2);
+  }
+
+  @Test
+  void reflection2()
+      throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    Class<?> helloClass = Class.forName("hello.proxy.jdkdynamic.ReflectionTest$Hello");
+
+    Hello hello = new Hello();
+
+    Method callAMethod = helloClass.getMethod("callA");
+    dynamicCall(callAMethod, hello);
+
+    Method callBMethod = helloClass.getMethod("callB");
+    dynamicCall(callBMethod, hello);
+  }
+
+  void dynamicCall(Method method, Object target)
+      throws InvocationTargetException, IllegalAccessException {
+    log.info("start");
+    Object result = method.invoke(target);
+    log.info("result={}", result);
   }
 
   <T> void call(Supplier<T> supplier) {
