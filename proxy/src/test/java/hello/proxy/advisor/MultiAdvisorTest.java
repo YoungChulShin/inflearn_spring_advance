@@ -3,11 +3,14 @@ package hello.proxy.advisor;
 import hello.proxy.common.advice.TimeAdvice;
 import hello.proxy.common.service.ServiceImpl;
 import hello.proxy.common.service.ServiceInterface;
+import java.lang.reflect.Method;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.ClassFilter;
+import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
@@ -43,7 +46,7 @@ public class MultiAdvisorTest {
     // client -> proxy2 -> proxy1 -> target
 
     DefaultPointcutAdvisor advisor1 = new DefaultPointcutAdvisor(Pointcut.TRUE, new Advice1());
-    DefaultPointcutAdvisor advisor2 = new DefaultPointcutAdvisor(Pointcut.TRUE, new Advice2());
+    DefaultPointcutAdvisor advisor2 = new DefaultPointcutAdvisor(new MyPointcut(), new Advice2());
 
     // proxy1 생성
     ServiceInterface target = new ServiceImpl();
@@ -54,6 +57,39 @@ public class MultiAdvisorTest {
 
     // 실행
     proxy.save();
+  }
+
+  static class MyPointcut implements Pointcut {
+
+    @Override
+    public ClassFilter getClassFilter() {
+      return ClassFilter.TRUE;
+    }
+
+    @Override
+    public MethodMatcher getMethodMatcher() {
+      return new MyMethodMatcher();
+    }
+  }
+
+  @Slf4j
+  static class MyMethodMatcher implements MethodMatcher {
+
+    @Override
+    public boolean matches(Method method, Class<?> targetClass) {
+      log.info("MyMethodMatcher 호출");
+      return method.getName().equals("find");
+    }
+
+    @Override
+    public boolean isRuntime() {
+      return false;
+    }
+
+    @Override
+    public boolean matches(Method method, Class<?> targetClass, Object... args) {
+      return false;
+    }
   }
 
   @Slf4j
