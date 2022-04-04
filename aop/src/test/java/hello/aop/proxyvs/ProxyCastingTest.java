@@ -31,7 +31,7 @@ public class ProxyCastingTest {
 
   @Test
   void cglibProxy() {
-    MemberServiceImpl target = new MemberServiceImpl);
+    MemberServiceImpl target = new MemberServiceImpl();
 
     ProxyFactory proxyFactory = new ProxyFactory(target);
     proxyFactory.setProxyTargetClass(true);  // CGLIB 프록시
